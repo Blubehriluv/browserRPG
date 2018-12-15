@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<title></title>
+		<link href="main2.css" rel="stylesheet" type="text/css">
+		<link rel="icon" href="valleymotors.png">
+	</head>
+	
+	<body>
+		<p id="pHit"></p>
+		<p id="eHit"></p>
+		<p id="pLife"></p>
+		<p id="eLife"></p>
+		<p id="exp"></p>
+		
+		<button type='button' id="bootun" onclick="fight()">Fight</button>
+		<button type='button' id="bootun" onclick="heal()">Heal</button>
+		
+		<script>
+			var playerName = document.getElementById("pName");
+			var enemy = ["Burgular", "Murderer", "Tea-drinker", "Feminist", "Animal Abuser"];
+			var killsTilBoss = 0;
+			var level0hp = 100;
+			
+			var player = {
+				level: 0,
+				health: 100,
+				attack: 20,
+				healing: 5,
+				money: 50,
+				experience: 0
+			};
+			
+			var enemy = {
+				health: 60,
+				attack: 5,
+				money: 5,
+				experience: 60
+			};
+			
+			var boss = {
+				health: 200,
+				attack: 30,
+			};
+			
+			function fight() {
+				playerHit();
+				enemyHit();
+				checkEnemy();
+				checkLife();
+			}
+			
+			function playerHit() {
+			//0 - 5 = miss, 6 - 15 = hit, 16 - 20 = critical
+				var pHit = Math.floor(Math.random() * 20 + 1);
+
+				//MISS CHANCE FOR PLAYER
+				if (pHit >= 1 && pHit <= 5) {
+					document.getElementById("pHit").innerHTML = "You missed...";
+				}
+				//HIT CHANCE FOR PLAYER
+				if (pHit >= 6 && pHit <= 15) {
+					document.getElementById("pHit").innerHTML = "You hit the enemy for " + player.attack + " damage.";
+					
+					enemy.health -= player.attack;
+				}
+				//CRIT CHANCE FOR PLAYER
+				if (pHit >= 16 && pHit <= 20) {
+					var moreDam = player.attack * (75 / 100);
+					var crit = player.attack + moreDam;
+					
+					document.getElementById("pHit").innerHTML = "You critical hit for " + crit + " damage!";
+					
+					enemy.health -= crit;
+				}
+			}
+			
+			function enemyHit() {
+			//0 - 5 = miss, 6 - 15 = hit, 16 - 20 = critical
+				var eHit = Math.floor(Math.random() * 20 + 1);
+				
+				//MISS CHANCE FOR ENEMY
+				if (eHit >= 1 && eHit <= 5) {
+					document.getElementById("eHit").innerHTML = "The enemy missed...";
+				}
+				//HIT CHANCE FOR PLAYER
+				if (eHit >= 6 && eHit <= 15) {
+					
+					document.getElementById("eHit").innerHTML = "The enemy hit you for " + enemy.attack + " damage.";
+					
+					player.health -= enemy.attack;
+				}
+				//CRIT CHANCE FOR PLAYER
+				if (eHit >= 16 && eHit <= 20) {
+					var moreDam = enemy.attack * (75 / 100);
+					var crit = enemy.attack + moreDam;
+					
+					document.getElementById("eHit").innerHTML = "The enemy critical hit for " + crit + " damage!";
+					
+					player.health -= crit;
+				}
+			}
+			
+			//This system grants the player experience for kills and assigns health and damage values
+			function leveling() {
+				player.experience += enemy.experience;
+				
+				if (player.experience >= 100) {
+					document.getElementById("exp").innerHTML = "Level up! You are now Level 1.";
+					level1hp = 125;
+					level1at = 45;
+					player.level = 1;
+					player.health = level1hp;
+					player.attack = level1at;
+				}
+				if (player.experience >= 200) {
+					document.getElementById("exp").innerHTML = "Level up! You are now Level 2.";
+					level2hp = 150;
+					level2at = 70;
+					player.level = 2;
+					player.health = level2hp;
+					player.attack = level2at;
+				}
+				if (player.experience >= 300) {
+					document.getElementById("exp").innerHTML = "Level up! You are now Level 3.";
+					level3hp = 175;
+					level3at = 95;
+					player.level = 3;
+					player.health = level3hp;
+					player.attack = level3at;
+				}
+			}					
+			
+			function checkLife() {
+				if (player.health <= 0) {
+					document.getElementById("pLife").innerHTML = "You died.";
+				}
+				else {
+					document.getElementById("pLife").innerHTML = "Your life is " + player.health;
+				}
+			}
+			
+			function checkEnemy() {
+				if (enemy.health <= 0) {
+					document.getElementById("eLife").innerHTML = "You killed the enemy!";
+					killsTilBoss += 1;
+					bossCheck();
+					player.money += enemy.money;
+				}
+				else {
+					document.getElementById("eLife").innerHTML = "Enemy's life total is " + enemy.health;
+					leveling();
+				}
+			}
+			
+			function bossCheck() {
+				if (killsTilBoss === 5) {
+					document.write("bosstime");
+				}
+			}
+			
+			function heal() {
+				if (player.level === 0) {
+					if (player.health >= (level0hp - 19)) {
+					player.health = level0hp;
+					}
+				}
+				if (player.level === 1) {
+					if (player.health >= (level1hp - 19)) {
+					player.health = level1hp;
+					}
+				}
+				if (player.level === 2) {
+					if (player.health >= (level2hp - 19)) {
+					player.health = level2hp;
+					}
+				}
+				if (player.level === 3) {
+					if (player.health >= (level3hp - 19)) {
+					player.health = level3hp;
+					}
+				}
+				else {
+					player.health += 20;
+				}
+			}
+		</script>
+	</body>
+</html>
